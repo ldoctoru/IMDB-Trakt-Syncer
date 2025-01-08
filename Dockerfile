@@ -7,10 +7,7 @@ ENV PERSISTENT_DIR=/data
 ENV XDG_CONFIG_HOME=/data
 ENV PYTHONPATH=/usr/local/lib/python3.10/site-packages:$PYTHONPATH
 
-# Set the working directory
-WORKDIR /app
-
-# Install required system dependencies for Chrome/Chromium and WebDriver
+# Install required system dependencies
 RUN apt-get update && apt-get install -y \
     wget \
     unzip \
@@ -36,20 +33,18 @@ RUN wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd6
     && dpkg -i google-chrome-stable_current_amd64.deb || apt-get -fy install \
     && rm google-chrome-stable_current_amd64.deb
 
-# Upgrade pip and install IMDBTraktSyncer
+# Install IMDBTraktSyncer
 RUN python3 -m pip install --upgrade pip \
     && python3 -m pip install --no-cache-dir IMDBTraktSyncer
 
-# Redirect settings to /data/settings
-RUN mkdir -p /data/settings \
-    && rm -rf /usr/local/lib/python3.10/site-packages/IMDBTraktSyncer \
-    && ln -s /data/settings /usr/local/lib/python3.10/site-packages/IMDBTraktSyncer
+# Create a persistent data directory
+RUN mkdir -p /data
 
-# Change to persistent directory for all operations
+# Set the working directory
 WORKDIR /data
 
-# Verify installation
-RUN python3 -c "import IMDBTraktSyncer; print('IMDBTraktSyncer is installed correctly')"
+# Override the settings path in the Python environment
+RUN echo "import os; os.environ['IMDBTRAKTSYNCER_SETTINGS'] = '/data/settings'" >> /usr/local/lib/python3.10/site-packages/IMDBTraktSyncer/__init__.py
 
-# Set the default command to run IMDBTraktSyncer and keep the container alive
+# Default command to run IMDBTraktSyncer
 CMD ["bash", "-c", "IMDBTraktSyncer && tail -f /dev/null"]
