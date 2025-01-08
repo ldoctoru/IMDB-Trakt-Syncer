@@ -43,5 +43,8 @@ RUN mkdir -p /data/settings \
     && rm -rf /usr/local/lib/python3.10/site-packages/IMDBTraktSyncer \
     && ln -s /data/settings /usr/local/lib/python3.10/site-packages/IMDBTraktSyncer
 
-# Keep the container running by default
-CMD ["bash", "-c", "while true; do sleep 30; done"]
+# Change to persistent directory for all operations
+WORKDIR /data
+
+# Set the default command to run IMDBTraktSyncer and keep the container running
+CMD ["bash", "-c", "IMDBTraktSyncer && tail -f /dev/null"]
