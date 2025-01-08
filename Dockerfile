@@ -33,5 +33,4 @@ VOLUME ["/config"]
 ENTRYPOINT ["python", "/app/IMDBTraktSyncer/IMDBTraktSyncer.py"]
 
 # Default command (can be overridden)
-CMD ["--help"]
 CMD ["tail", "-f", "/dev/null"]
