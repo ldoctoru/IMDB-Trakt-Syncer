@@ -36,7 +36,8 @@ RUN wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd6
     && rm google-chrome-stable_current_amd64.deb
 
 # Install IMDBTraktSyncer and dependencies
-RUN pip install IMDBTraktSyncer --upgrade
+RUN python -m pip install --upgrade pip \
+    && pip install IMDBTraktSyncer
 
 # Create a persistent data directory
 RUN mkdir -p /data/settings \
