@@ -18,7 +18,7 @@ RUN apt-get update && apt-get install -y \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Clone the IMDB-Trakt-Syncer repository into the /app directory
-RUN git clone https://github.com/RileyXX/IMDB-Trakt-Syncer.git /app
+RUN git clone https://github.com/ldoctoru/IMDB-Trakt-Syncer.git /app
 
 # Set the working directory to /app
 WORKDIR /app/IMDBTraktSyncer
