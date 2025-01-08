@@ -17,10 +17,10 @@ RUN apt-get update && apt-get install -y \
     apt-transport-https && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Clone the IMDB-Trakt-Syncer repository from GitHub
-RUN git clone https://github.com/ldoctoru/IMDB-Trakt-Syncer.git /app
+# Clone the IMDB-Trakt-Syncer repository into the /app directory
+RUN git clone https://github.com/RileyXX/IMDB-Trakt-Syncer.git /app
 
-# Set the working directory
+# Set the working directory to /app
 WORKDIR /app
 
 # Install Python dependencies
@@ -30,7 +30,7 @@ RUN pip install -r requirements.txt
 VOLUME ["/config"]
 
 # Entry point for running the script
-ENTRYPOINT ["python", "IMDBTraktSyncer.py"]
+ENTRYPOINT ["python", "/app/IMDBTraktSyncer.py"]
 
 # Default command (can be overridden)
 CMD ["--help"]
