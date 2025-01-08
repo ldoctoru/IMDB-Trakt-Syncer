@@ -38,13 +38,14 @@ RUN python3 -m pip install --upgrade pip \
     && python3 -m pip install --no-cache-dir IMDBTraktSyncer
 
 # Create persistent data directory
-RUN mkdir -p /data/settings && chmod -R 777 /data/settings
+RUN mkdir -p /data && chmod -R 777 /data
 
-# Set the working directory
+# Modify IMDBTraktSyncer to save settings in /data
+RUN sed -i 's|credentials.txt|/data/credentials.txt|g' /usr/local/lib/python3.10/site-packages/IMDBTraktSyncer/*.py \
+    && sed -i 's|log.txt|/data/log.txt|g' /usr/local/lib/python3.10/site-packages/IMDBTraktSyncer/*.py
+
+# Set working directory
 WORKDIR /data
-
-# Ensure IMDBTraktSyncer saves settings to /data/settings
-RUN echo "import os; os.environ['IMDBTRAKTSYNCER_SETTINGS'] = '/data/settings'" >> /usr/local/lib/python3.10/site-packages/IMDBTraktSyncer/__init__.py
 
 # Default command
 CMD ["bash", "-c", "IMDBTraktSyncer && tail -f /dev/null"]
