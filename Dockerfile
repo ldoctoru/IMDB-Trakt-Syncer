@@ -37,14 +37,14 @@ RUN wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd6
 RUN python3 -m pip install --upgrade pip \
     && python3 -m pip install --no-cache-dir IMDBTraktSyncer
 
-# Create a persistent data directory
-RUN mkdir -p /data
+# Create persistent data directory
+RUN mkdir -p /data/settings && chmod -R 777 /data/settings
 
 # Set the working directory
 WORKDIR /data
 
-# Override the settings path in the Python environment
+# Ensure IMDBTraktSyncer saves settings to /data/settings
 RUN echo "import os; os.environ['IMDBTRAKTSYNCER_SETTINGS'] = '/data/settings'" >> /usr/local/lib/python3.10/site-packages/IMDBTraktSyncer/__init__.py
 
-# Default command to run IMDBTraktSyncer
+# Default command
 CMD ["bash", "-c", "IMDBTraktSyncer && tail -f /dev/null"]
