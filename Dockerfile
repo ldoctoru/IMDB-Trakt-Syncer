@@ -47,5 +47,10 @@ RUN sed -i 's|credentials.txt|/data/credentials.txt|g' /usr/local/lib/python3.10
 # Set working directory
 WORKDIR /data
 
+# Configure cron to run IMDBTraktSyncer every 12 hours
+RUN echo "0 */12 * * * root /usr/local/bin/IMDBTraktSyncer >> /data/cron.log 2>&1" > /etc/cron.d/imdbtrakt-cron \
+    && chmod 0644 /etc/cron.d/imdbtrakt-cron \
+    && crontab /etc/cron.d/imdbtrakt-cron
+
 # Default command
 CMD ["bash", "-c", "IMDBTraktSyncer && tail -f /dev/null"]
