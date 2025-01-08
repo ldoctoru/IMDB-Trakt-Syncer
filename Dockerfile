@@ -28,7 +28,7 @@ RUN git clone https://github.com/ldoctoru/IMDB-Trakt-Syncer.git /app
 WORKDIR /app/IMDBTraktSyncer
 
 # Install Python dependencies
-RUN pip install --upgrade pip && pip install -r requirements.txt
+RUN pip install --upgrade pip && pip install -r /app/requirements.txt
 
 # Expose a volume for persistent data (e.g., credentials)
 VOLUME ["/config"]
