@@ -11,6 +11,7 @@ ENV PYTHONPATH=/usr/local/lib/python3.10/site-packages:$PYTHONPATH
 RUN apt-get update && apt-get install -y \
     wget \
     unzip \
+    cron \
     libnss3 \
     libgconf-2-4 \
     libxi6 \
@@ -48,9 +49,12 @@ RUN sed -i 's|credentials.txt|/data/credentials.txt|g' /usr/local/lib/python3.10
 WORKDIR /data
 
 # Configure cron to run IMDBTraktSyncer every 12 hours
-RUN echo "0 */12 * * * root /usr/local/bin/IMDBTraktSyncer >> /data/cron.log 2>&1" > /etc/cron.d/imdbtrakt-cron \
+RUN echo "0 */12 * * * /usr/local/bin/IMDBTraktSyncer >> /data/cron.log 2>&1" > /etc/cron.d/imdbtrakt-cron \
     && chmod 0644 /etc/cron.d/imdbtrakt-cron \
     && crontab /etc/cron.d/imdbtrakt-cron
+
+# Ensure cron logs are written to /data/cron.log
+RUN touch /data/cron.log && chmod 666 /data/cron.log
 
 # Default command
 CMD ["bash", "-c", "IMDBTraktSyncer && tail -f /dev/null"]
