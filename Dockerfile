@@ -16,5 +16,5 @@ VOLUME ["/data"]
 # Set the default persistent directory as an environment variable
 ENV PERSISTENT_DIR=/data
 
-# Default to a simple bash shell to keep the container running
-CMD ["bash"]
+# Keep the container running by starting an interactive bash session
+CMD ["bash", "-c", "while true; do sleep 30; done"]
