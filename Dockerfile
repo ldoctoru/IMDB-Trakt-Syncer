@@ -14,23 +14,28 @@ RUN apt-get update && apt-get install -y \
     gnupg \
     chromium \
     chromium-driver \
+    gcc \
+    libffi-dev \
+    python3-dev \
+    build-essential \
     apt-transport-https && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Clone the IMDB-Trakt-Syncer repository into the /app directory
+# Clone the IMDB-Trakt-Syncer repository into /app
 RUN git clone https://github.com/ldoctoru/IMDB-Trakt-Syncer.git /app
 
-# Set the working directory to /app
+# Set the working directory
 WORKDIR /app/IMDBTraktSyncer
 
 # Install Python dependencies
-RUN pip install -r /app/requirements.txt
+RUN pip install --upgrade pip && pip install -r requirements.txt
 
 # Expose a volume for persistent data (e.g., credentials)
 VOLUME ["/config"]
 
-# Entry point for running the script
-ENTRYPOINT ["python", "/app/IMDBTraktSyncer/IMDBTraktSyncer.py"]
+# Copy the entrypoint script into the container
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
-# Default command (can be overridden)
-CMD ["tail", "-f", "/dev/null"]
+# Use the custom entrypoint script
+ENTRYPOINT ["/entrypoint.sh"]
