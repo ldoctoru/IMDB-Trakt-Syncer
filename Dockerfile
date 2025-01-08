@@ -5,8 +5,6 @@ FROM python:3.10-slim
 ENV PYTHONUNBUFFERED=1
 ENV PERSISTENT_DIR=/data
 ENV XDG_CONFIG_HOME=/data
-
-# Add the Python packages path to PYTHONPATH
 ENV PYTHONPATH=/usr/local/lib/python3.10/site-packages:$PYTHONPATH
 
 # Set the working directory
@@ -42,14 +40,16 @@ RUN wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd6
 RUN python3 -m pip install --upgrade pip \
     && python3 -m pip install --no-cache-dir IMDBTraktSyncer
 
-# Verify installation
-RUN python3 -c "import IMDBTraktSyncer; print('IMDBTraktSyncer is installed correctly')"
-
-# Create a persistent data directory
-RUN mkdir -p /data
+# Redirect settings to /data/settings
+RUN mkdir -p /data/settings \
+    && rm -rf /usr/local/lib/python3.10/site-packages/IMDBTraktSyncer \
+    && ln -s /data/settings /usr/local/lib/python3.10/site-packages/IMDBTraktSyncer
 
 # Change to persistent directory for all operations
 WORKDIR /data
+
+# Verify installation
+RUN python3 -c "import IMDBTraktSyncer; print('IMDBTraktSyncer is installed correctly')"
 
 # Set the default command to run IMDBTraktSyncer and keep the container alive
 CMD ["bash", "-c", "IMDBTraktSyncer && tail -f /dev/null"]
