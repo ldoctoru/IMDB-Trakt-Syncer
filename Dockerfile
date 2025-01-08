@@ -11,10 +11,10 @@ WORKDIR /app
 RUN pip install IMDBTraktSyncer --upgrade
 
 # Create a volume for persistent data
-VOLUME ["/config"]
+VOLUME ["/data"]
 
 # Set the default persistent directory as an environment variable
-ENV PERSISTENT_DIR=/config
+ENV PERSISTENT_DIR=/data
 
-# Default command to display help (can be overridden)
-CMD ["IMDBTraktSyncer", "--help"]
+# Default to a simple bash shell to keep the container running
+CMD ["bash"]
