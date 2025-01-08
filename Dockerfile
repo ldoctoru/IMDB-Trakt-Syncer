@@ -1,41 +1,20 @@
-# Use a multi-platform compatible base image
-FROM --platform=$BUILDPLATFORM python:3.9-slim
+# Use a lightweight Python image
+FROM python:3.10-slim
 
 # Set environment variables
-ENV DEBIAN_FRONTEND=noninteractive
-
-# Install dependencies
-RUN apt-get update && apt-get install -y \
-    wget \
-    unzip \
-    xvfb \
-    git \
-    curl \
-    gnupg \
-    chromium \
-    chromium-driver \
-    gcc \
-    libffi-dev \
-    python3-dev \
-    build-essential \
-    apt-transport-https && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
-
-# Clone the IMDB-Trakt-Syncer repository into /app
-RUN git clone https://github.com/ldoctoru/IMDB-Trakt-Syncer.git /app
+ENV PYTHONUNBUFFERED=1
 
 # Set the working directory
-WORKDIR /app/IMDBTraktSyncer
+WORKDIR /app
 
-# Install Python dependencies
-RUN pip install --upgrade pip && pip install -r /app/requirements.txt
+# Install IMDBTraktSyncer
+RUN pip install IMDBTraktSyncer --upgrade
 
-# Expose a volume for persistent data (e.g., credentials)
+# Create a volume for persistent data
 VOLUME ["/config"]
 
-# Copy the entrypoint script into the container
-COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+# Set the default persistent directory as an environment variable
+ENV PERSISTENT_DIR=/config
 
-# Use the custom entrypoint script
-ENTRYPOINT ["/entrypoint.sh"]
+# Default command to display help (can be overridden)
+CMD ["IMDBTraktSyncer", "--help"]
