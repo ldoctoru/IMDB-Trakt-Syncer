@@ -4,6 +4,7 @@ FROM python:3.10-slim
 # Set environment variables
 ENV PYTHONUNBUFFERED=1
 ENV PERSISTENT_DIR=/data
+ENV XDG_CONFIG_HOME=/data
 
 # Set the working directory
 WORKDIR /app
@@ -38,10 +39,9 @@ RUN wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd6
 RUN pip install IMDBTraktSyncer --upgrade
 
 # Create a persistent data directory
-RUN mkdir -p /data
+RUN mkdir -p /data/settings \
+    && rm -rf /usr/local/lib/python3.10/site-packages/IMDBTraktSyncer \
+    && ln -s /data/settings /usr/local/lib/python3.10/site-packages/IMDBTraktSyncer
 
-# Change to persistent directory for all operations
-WORKDIR /data
-
-# Set the default command to keep the container running
+# Keep the container running by default
 CMD ["bash", "-c", "while true; do sleep 30; done"]
