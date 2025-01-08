@@ -34,11 +34,14 @@ RUN wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd6
     && dpkg -i google-chrome-stable_current_amd64.deb || apt-get -fy install \
     && rm google-chrome-stable_current_amd64.deb
 
-# Install IMDBTraktSyncer
+# Install IMDBTraktSyncer and dependencies
 RUN pip install IMDBTraktSyncer --upgrade
 
-# Create a volume for persistent data
-VOLUME ["/data"]
+# Create a persistent data directory
+RUN mkdir -p /data
 
-# Keep the container running by default
+# Change to persistent directory for all operations
+WORKDIR /data
+
+# Set the default command to keep the container running
 CMD ["bash", "-c", "while true; do sleep 30; done"]
